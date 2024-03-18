@@ -20,7 +20,6 @@ public class DownloadServlet extends HttpServlet {
         resp.setContentType(mimeType);
 
         resp.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
-        resp.setContentLength((int) file.length());
 
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
         FileCopyUtils.copy(inputStream, resp.getOutputStream());
