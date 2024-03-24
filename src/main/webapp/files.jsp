@@ -11,13 +11,14 @@
 
 <body>
 <p>Текущее время: <%= new Date() %></p>
-<p>Текущая папка: <%= request.getParameter("path") %></p>
+<p>Текущая папка: <%= request.getAttribute("path") %></p>
 <ul>
     <%
         String path = (String)request.getParameter("path");
         String parentPath = new File(path).getParent();
-        if(parentPath == null){
-            parentPath = "C:/";
+        String login = (String) request.getAttribute("login");
+        if(parentPath == null || parentPath.length() < ("C:\\test\\".length() + login.length())){
+            parentPath = "C:\\test\\" + request.getAttribute("login");
         }
     %>
     <li>
@@ -44,5 +45,10 @@
     }
     %>
 </ul>
+
+<form action="files" method="POST">
+    <input type="submit" value="Выйти">
+</form>
+
 </body>
 </html>
