@@ -17,6 +17,10 @@
         String path = (String)request.getParameter("path");
         String parentPath = new File(path).getParent();
         String login = (String) request.getAttribute("login");
+
+        String folder = (String) request.getAttribute("path");
+        new File(folder).mkdir();
+
         if(parentPath == null || parentPath.length() < ("C:\\test\\".length() + login.length())){
             parentPath = "C:\\test\\" + request.getAttribute("login");
         }

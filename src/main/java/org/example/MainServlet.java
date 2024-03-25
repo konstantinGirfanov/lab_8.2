@@ -18,20 +18,21 @@ public class MainServlet extends HttpServlet {
         String login = (String) req.getSession().getAttribute("login");
         String pass = (String) req.getSession().getAttribute("pass");
 
-        if(AccountService.getUserByLogin(login) == null || !AccountService.getUserByLogin(login).getPass().equals(pass)) {
+        /*if(AccountService.getUserByLogin(login) == null || !AccountService.getUserByLogin(login).getPass().equals(pass)) {
             String url = req.getContextPath();
             resp.sendRedirect(url + "/login");
             return;
-        }
+        }*/
 
         String path = req.getParameter("path");
-        if(path.length() < ("C:\\test\\".length() + login.length())){
+
+        if(!path.contains("C:/test/" + login + "/")){
             path = "C:\\test\\" + login;
         }
 
         File directory = new File(path);
+        directory.mkdir();
         File[] files = directory.listFiles();
-
         req.setAttribute("files", files);
         req.setAttribute("path", path);
         req.setAttribute("login", login);
