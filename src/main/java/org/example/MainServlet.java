@@ -24,14 +24,22 @@ public class MainServlet extends HttpServlet {
             return;
         }*/
 
-        String path = req.getParameter("path");
+        if(login == null){
+            String url = req.getContextPath();
+            resp.sendRedirect(url + "/login");
+            return;
+        }
 
-        if(!path.contains("C:/test/" + login + "/")){
+        File file = new File((req.getParameter("path").replace('/', '\\')));
+        String path = file.getAbsolutePath();
+        if(!path.contains("C:\\test\\" + login))
+        {
             path = "C:\\test\\" + login;
         }
 
         File directory = new File(path);
         directory.mkdir();
+
         File[] files = directory.listFiles();
         req.setAttribute("files", files);
         req.setAttribute("path", path);
@@ -47,5 +55,7 @@ public class MainServlet extends HttpServlet {
 
         String url = req.getContextPath();
         resp.sendRedirect(url + "/login");
+
+        String[] t = new String[] {};
     }
 }

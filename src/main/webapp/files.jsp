@@ -14,15 +14,12 @@
 <p>Текущая папка: <%= request.getAttribute("path") %></p>
 <ul>
     <%
-        String path = (String)request.getParameter("path");
-        String parentPath = new File(path).getParent();
+        String path = (String) request.getParameter("path");
         String login = (String) request.getAttribute("login");
 
-        String folder = (String) request.getAttribute("path");
-        new File(folder).mkdir();
-
-        if(parentPath == null || parentPath.length() < ("C:\\test\\".length() + login.length())){
-            parentPath = "C:\\test\\" + request.getAttribute("login");
+        String parentPath = new File(path).getParent();
+        if(parentPath == null || !parentPath.contains("C:/test/" + login + "/")){
+            parentPath = "C:\\test\\" + login;
         }
     %>
     <li>

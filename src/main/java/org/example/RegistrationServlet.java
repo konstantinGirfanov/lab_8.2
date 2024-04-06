@@ -30,7 +30,6 @@ public class RegistrationServlet extends HttpServlet {
             return;
         }
 
-
         UserProfile profile = new UserProfile(login, pass, email);
         if(AccountService.getUserByLogin(login) == null){
             AccountService.AddNewUser(new UserProfile(login, pass, email));
