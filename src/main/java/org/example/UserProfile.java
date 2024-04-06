@@ -15,6 +15,7 @@ public class UserProfile {
         this.login = login;
         this.pass = login;
         this.email = login;
+        String test = "test";
     }
 
     public String getLogin() {
