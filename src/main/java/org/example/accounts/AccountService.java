@@ -4,20 +4,30 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.example.*;
+import java.sql.*;
+import org.example.DB.*;
+
 public class AccountService {
-    private static final Map<String, UserProfile> loginToProfile = new HashMap<String, UserProfile>()
-    {
-        {
-            put("1", new UserProfile("1", "1", "1@1"));
+
+    private DbContext db = new DbContext();
+
+    public void AddNewUser(UserProfile user){
+        String query = "INSERT INTO users (login, password, email) VALUES (?, ?, ?)";
+        try {
+            db.execUpdate(query, user.getLogin(), user.getPass(), user.getEmail());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    };
-
-    public static void AddNewUser(UserProfile user) throws IOException {
-        loginToProfile.put(user.getLogin(), user);
     }
 
-    public static UserProfile getUserByLogin(String login) {
-        return loginToProfile.get(login);
+    public UserProfile getUserByLogin(String login){
+        String query = "SELECT * FROM users WHERE login = ?";
+        UserProfile user = null;
+        try {
+            user = db.execQuery(query, login);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
-
 }

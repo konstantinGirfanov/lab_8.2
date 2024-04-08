@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
+    private AccountService service = new AccountService();
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -31,8 +33,8 @@ public class RegistrationServlet extends HttpServlet {
         }
 
         UserProfile profile = new UserProfile(login, pass, email);
-        if(AccountService.getUserByLogin(login) == null){
-            AccountService.AddNewUser(new UserProfile(login, pass, email));
+        if(service.getUserByLogin(login) == null){
+            service.AddNewUser(new UserProfile(login, pass, email));
 
             req.getSession().setAttribute("login", login);
             req.getSession().setAttribute("pass", pass);

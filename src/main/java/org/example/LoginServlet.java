@@ -9,9 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+    AccountService service = new AccountService();
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
@@ -23,7 +25,7 @@ public class LoginServlet extends HttpServlet {
         String login = req.getParameter("login");
         String pass = req.getParameter("pass");
 
-        UserProfile profile = AccountService.getUserByLogin(login);
+        UserProfile profile = service.getUserByLogin(login);
         if (profile == null || !profile.getPass().equals(pass)) {
             resp.setContentType("text/html;charset=utf-8");
             resp.getWriter().println("Неправильный логин или пароль");
