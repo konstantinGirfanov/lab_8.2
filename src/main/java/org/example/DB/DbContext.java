@@ -1,85 +1,53 @@
 package org.example.DB;
 
 import org.example.UserProfile;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 
 import java.sql.*;
 
 public class DbContext {
     public Configuration configuration;
     private SessionFactory sessionFactory;
-    private Connection connection;
-
-    private void createConnection() {
-        /*
-        if (connection == null) {
-            try {
-                DriverManager.registerDriver((Driver) Class.forName("org.postgresql.Driver").newInstance());
-                String url = "jdbc:postgresql://localhost:5432/test";
-                String username = "postgres";
-                String password = "root";
-                connection = DriverManager.getConnection(url, username, password);
-            } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }*/
-
+    public DbContext(){
         this.configuration = new Configuration();
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/test");
-        configuration.setProperty("hibernate.connection.username", "postgres");
-        configuration.setProperty("hibernate.connection.password", "root");
-        configuration.setProperty("hibernate.show_sql", "true");
-        configuration.setProperty("hibernate.hbm2ddl.auto", "validate");
-        configuration.addAnnotatedClass(UserProfile.class);
+        this.configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        this.configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+        this.configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/test");
+        this.configuration.setProperty("hibernate.connection.username", "postgres");
+        this.configuration.setProperty("hibernate.connection.password", "root");
+        this.configuration.setProperty("hibernate.show_sql", "true");
+        this.configuration.setProperty("hibernate.hbm2ddl.auto", "validate");
+        this.configuration.addAnnotatedClass(UserProfile.class);
+        createSessionFactory();
     }
 
-    public void execUpdate(String query, Object... params) throws SQLException{
-        /*createConnection();
-        PreparedStatement statement = connection.prepareStatement(query);
-        for (int i = 0; i < params.length; i++) {
-            statement.setObject(i + 1, params[i]);
-        }
-        statement.executeUpdate();*/
-
-        Session session = sessionFactory.openSession();
+    public void execUpdate(UserProfile user){
+        Session session = this.sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
         session.save(user);
         transaction.commit();
         session.close();
     }
 
-    public UserProfile execQuery(String query, Object... params) throws SQLException{
-        /*createConnection();
-        PreparedStatement statement = connection.prepareStatement(query);
-        for (int i = 0; i < params.length; i++) {
-            statement.setObject(i + 1, params[i]);
-        }
-
-        ResultSet result = statement.executeQuery();
-
-        if (result.next()) {
-            String  login = result.getString("login");
-            String  pass = result.getString("password");
-            String  email = result.getString("email");
-            return new UserProfile(login, pass, email);
-        }
-
-        return null;*/
-
-
+    public UserProfile execQuery(String login){
+        Session session = this.sessionFactory.openSession();
+        Criteria criteria = session.createCriteria(UserProfile.class);
+        UserProfile user = (UserProfile) criteria.add(Restrictions.eq("login", login)).uniqueResult();
+        session.close();
+        return user;
     }
 
-    public SessionFactory createSessionFactory() {
+    public void createSessionFactory() {
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
-        builder.applySettings(configuration.getProperties());
+        builder.applySettings(this.configuration.getProperties());
         StandardServiceRegistry serviceRegistry = builder.build();
-        return configuration.buildSessionFactory(serviceRegistry);
+        this.sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 }

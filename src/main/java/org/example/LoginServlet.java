@@ -7,9 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -26,7 +24,7 @@ public class LoginServlet extends HttpServlet {
         String pass = req.getParameter("pass");
 
         UserProfile profile = service.getUserByLogin(login);
-        if (profile == null || !profile.getPass().equals(pass)) {
+        if (profile == null || !profile.getPassword().equals(pass)) {
             resp.setContentType("text/html;charset=utf-8");
             resp.getWriter().println("Неправильный логин или пароль");
             return;

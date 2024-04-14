@@ -1,19 +1,34 @@
 package org.example;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
 public class UserProfile {
-    private final String login;
-    private final String pass;
-    private final String email;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    @Column(name = "login", unique = true, updatable = false)
+    private String login;
+    @Column(name = "password")
+    private String password;
+    @Column(name = "email")
+    private String email;
 
     public UserProfile(String login, String pass, String email) {
         this.login = login;
-        this.pass = pass;
+        this.password = pass;
         this.email = email;
+    }
+
+    public UserProfile(){
+
     }
 
     public UserProfile(String login) {
         this.login = login;
-        this.pass = login;
+        this.password = login;
         this.email = login;
     }
 
@@ -21,8 +36,8 @@ public class UserProfile {
         return login;
     }
 
-    public String getPass() {
-        return pass;
+    public String getPassword() {
+        return password;
     }
 
     public String getEmail() {
