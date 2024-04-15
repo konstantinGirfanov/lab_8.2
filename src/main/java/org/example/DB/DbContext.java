@@ -16,16 +16,23 @@ public class DbContext {
     public Configuration configuration;
     private SessionFactory sessionFactory;
     public DbContext(){
-        this.configuration = new Configuration();
-        this.configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        this.configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-        this.configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/test");
-        this.configuration.setProperty("hibernate.connection.username", "postgres");
-        this.configuration.setProperty("hibernate.connection.password", "root");
-        this.configuration.setProperty("hibernate.show_sql", "true");
-        this.configuration.setProperty("hibernate.hbm2ddl.auto", "validate");
-        this.configuration.addAnnotatedClass(UserProfile.class);
+        configuration = new Configuration();
+        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+        configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/test");
+        configuration.setProperty("hibernate.connection.username", "postgres");
+        configuration.setProperty("hibernate.connection.password", "root");
+        configuration.setProperty("hibernate.show_sql", "true");
+        configuration.setProperty("hibernate.hbm2ddl.auto", "validate");
+        configuration.addAnnotatedClass(UserProfile.class);
         createSessionFactory();
+    }
+
+    public void createSessionFactory() {
+        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+        builder.applySettings(configuration.getProperties());
+        StandardServiceRegistry serviceRegistry = builder.build();
+        sessionFactory = configuration.buildSessionFactory(serviceRegistry);
     }
 
     public void execUpdate(UserProfile user){
@@ -37,17 +44,9 @@ public class DbContext {
     }
 
     public UserProfile execQuery(String login){
-        Session session = this.sessionFactory.openSession();
-        Criteria criteria = session.createCriteria(UserProfile.class);
-        UserProfile user = (UserProfile) criteria.add(Restrictions.eq("login", login)).uniqueResult();
-        session.close();
-        return user;
-    }
+        Session session = sessionFactory.openSession();
 
-    public void createSessionFactory() {
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
-        builder.applySettings(this.configuration.getProperties());
-        StandardServiceRegistry serviceRegistry = builder.build();
-        this.sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+        Criteria criteria = session.createCriteria(UserProfile.class);
+        return  (UserProfile) criteria.add(Restrictions.eq("login", login)).uniqueResult();
     }
 }
